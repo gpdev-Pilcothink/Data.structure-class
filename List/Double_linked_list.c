@@ -1,30 +1,30 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#pragma warning(disable:4996)
 
-//ÀÌÁß ¿¬°á ¸®½ºÆ®¸¦ À§ÇÑ ±¸Á¶Ã¼ ¼±¾ð ºÎºÐ
+//ì´ì¤‘ ì—°ê²° ë¦¬ìŠ¤íŠ¸ë¥¼ ìœ„í•œ êµ¬ì¡°ì²´ ì„ ì–¸ ë¶€ë¶„
 typedef struct node {
-	int elem; // ÀÌ°Ç Ç×»ó ¹Ù²ð ¼ö ÀÖ´Ù. ¹®Á¦¿¡ µû¶ó ÀÚ¿¬½º·´°Ô Á¶ÀýÇÏÀÚ
-	struct node * prev;
-	struct node * next;
+	int elem; // ì´ê±´ í•­ìƒ ë°”ë€” ìˆ˜ ìžˆë‹¤. ë¬¸ì œì— ë”°ë¼ ìžì—°ìŠ¤ëŸ½ê²Œ ì¡°ì ˆí•˜ìž
+	struct node* prev;
+	struct node* next;
 }node;
 
 typedef struct {
-	node *header;
-	node *trailer;
-	int n; //³ëµå °³¼ö
+	node* header;
+	node* trailer;
+	int n; //ë…¸ë“œ ê°œìˆ˜
 }double_linked_list;
 
 double_linked_list* list;
 
-//¸®½ºÆ® ADT
+//ë¦¬ìŠ¤íŠ¸ ADT
 void initialize();
-node * getnode();
-int get(int r);  //r¹øÂ° ¿ø¼Ò ¹ÝÈ¯
+node* getnode();
+int get(int r);  //rë²ˆì§¸ ì›ì†Œ ë°˜í™˜
 void add(int r, int e);
 void addFisrt(int e);
 void addLast(int e);
-void element_set(int r, int e);//r¹øÂ° ¿ø¼Ò e·Î º¯°æ
+void element_set(int r, int e);//rë²ˆì§¸ ì›ì†Œ eë¡œ ë³€ê²½
 int element_remove(int r);
 int element_romoveFisrt();
 int element_removeLast();
@@ -32,68 +32,71 @@ void traverse();
 void invalidRankException();
 void FullListException();
 void emptyListException();
-//¿¬°á¸®½ºÆ® ±¸Çö½Ã ÇÊ¿äÇÑ ÇÔ¼ö
-void addNodeBefore(node *p, int e);
-int removeNode(node *p);
+//ì—°ê²°ë¦¬ìŠ¤íŠ¸ êµ¬í˜„ì‹œ í•„ìš”í•œ í•¨ìˆ˜
+void addNodeBefore(node* p, int e);
+int removeNode(node* p);
 
-int main(){
-	
-
+int main() {
+	list=(double_linked_list *)malloc(sizeof(double_linked_list));
+	initialize();
+	free(list);
+	return 0;
 }
 
-//¸®½ºÆ® ADT
-void initialize(){
-	list->header=getnode();
-	list->trailer=getnode();
-	list->header->next=list->trailer;
-	list->trailer->prev=list->header;
-	list->n=0;
+//ë¦¬ìŠ¤íŠ¸ ADT
+void initialize() {
+	list->header = getnode();
+	list->trailer = getnode();
+	list->header->next = list->trailer;
+	list->trailer->prev = list->header;
+	list->n = 0;
 	return;
 }
-node* getnode(){
-	node *newnode= (node *)malloc(sizeof(node));
+node* getnode() {
+	node* newnode = (node*)malloc(sizeof(node));
 	newnode->prev = NULL;
 	newnode->elem = 0;
 	newnode->next = NULL;
 	return newnode;
 }
-int get(int r){
-	node *p;
+int get(int r) {
+	node* p;
 
-	if(r<1 || r>list->n){
+	if (r<1 || r>list->n) {
 		invalidRankException();
+		return 0;
 	}
 	p = list->header;
-	for(int i=1; i<=r; i++){
-		p=p->next;
+	for (int i = 1; i <= r; i++) {
+		p = p->next;
 	}
 	return p->elem;
-} 
-void add(int r, int e){
-	node *p;
+}
+void add(int r, int e) {
+	node* p;
 
-	if(r<1|| (r>list->n+1)){
+	if (r < 1 || (r > list->n + 1)) {
 		invalidRankException();
 		return;
 	}
-	p=list->header;
-	for(int i=1; i<=r; i++){
-		p=p->next;
+	p = list->header;
+	for (int i = 1; i <= r; i++) {
+		p = p->next;
 	}
-	addNodeBefore(p,e);
-	list->n+=1;
+	addNodeBefore(p, e);
+	list->n += 1;
 	return;
 }
-void addFisrt(int e){
+void addFisrt(int e) {
 	node* p;
-	p=list->header->next;
-	addNodeBefore(p,e);
-	list->n+=1;
-	return ;
+	p = list->header->next;
+	addNodeBefore(p, e);
+	list->n += 1;
+	return;
 }
-void addLast(int e){
+void addLast(int e) {
 	node* p;
-	p=list->header;
+	p = list->header;
 	for (int i = 1; i <= list->n; i++) {
 		p = p->next;
 	}
@@ -101,101 +104,101 @@ void addLast(int e){
 	list->n += 1;
 	return;
 }
-void element_set(int r, int e){
+void element_set(int r, int e) {
 	node* p;
-	if (r<1 || (r > list->n)) {
+	if (r < 1 || (r > list->n)) {
 		invalidRankException();
-		return ;
+		return;
 	}
 	p = list->header;
 	for (int i = 1; i <= r; i++) {
 		p = p->next;
 	}
-	p->elem=e;
+	p->elem = e;
 }
-int element_remove(int r){
-	node* p;
-	int e=0;
+int element_remove(int r) {
+	node* p; 
+	int e = 0;
 	if (r<1 || r > list->n) {
 		invalidRankException();
-		return;
+		return 0;
 	}
 	if (list->n == 0) {
 		emptyListException();
-		return;
+		return 0;
 	}
 	p = list->header;
-	for(int i=1; i<=r; i++){
-		p=p->next;
+	for (int i = 1; i <= r; i++) {
+		p = p->next;
 	}
-	e=removeNode(p);
-	list->n-=1;
-	return e;
-}
-int element_romoveFisrt(){
-	node* p;
-	int e = 0;
-	if (list->n == 0) {
-		emptyListException();
-		return;
-	}
-	p = list->header->next;
-	e=removeNode(p, e);
+	e = removeNode(p);
 	list->n -= 1;
 	return e;
 }
-int element_removeLast(){
+int element_romoveFisrt() {
 	node* p;
-	p=list->header;
 	int e = 0;
 	if (list->n == 0) {
 		emptyListException();
-		return;
+		return 0;
+	}
+	p = list->header->next;
+	e = removeNode(p);
+	list->n -= 1;
+	return e;
+}
+int element_removeLast() {
+	node* p;
+	p = list->header;
+	int e = 0;
+	if (list->n == 0) {
+		emptyListException();
+		return 0;
 	}
 	for (int i = 1; i <= list->n; i++) {
 		p = p->next;
 	}
-	e = removeNode(p, e);
+	e = removeNode(p);
 	list->n -= 1;
 	return e;
 }
-void traverse(){
-	node *p;
-	p=list->header->next;
-	while(p!=list->trailer){
+void traverse() {
+	node* p;
+	p = list->header->next;
+	while (p != list->trailer) {
 		printf("%c", p->elem);
-		//¿©±â À§·Î ¿ø¼Ò ¹æ¹® ÇàÀ§ ÄÚµå ÀÔ·Â
-		p=p->next;
+		//ì—¬ê¸° ìœ„ë¡œ ì›ì†Œ ë°©ë¬¸ í–‰ìœ„ ì½”ë“œ ìž…ë ¥
+		p = p->next;
 
 	}
 	printf("\n");
 	return;
 }
-void invalidRankException(){
-	printf("Á¢±Ù ÇÒ¼ö ¾ø´Â ¹üÀ§¿¡ Á¢±ÙÇÏ¿´½À´Ï´Ù. ´Ù½Ã ½ÃµµÇÏ½Ê½Ã¿ä.");
+void invalidRankException() {
+	printf("invalid position");
 }
-void FullListException(){
-	printf("¸®½ºÆ®°¡ ÀÌ¹Ì ¸¸¿øÀÔ´Ï´Ù. ´Ù½Ã ½ÃµµÇÏ½Ê½Ã¿ä.");
+void FullListException() {
+	printf("invalid position");
 }
-void emptyListException(){
-	printf("¸®½ºÆ®¿¡ ¾Æ¹«°Íµµ Á¸ÀçÇÏÁö ¾Ê½À´Ï´Ù. ´Ù½Ã ½ÃµµÇÏ½Ê½Ã¿ä.");
+void emptyListException() {
+	printf("invalid position");
 }
-//¿¬°á¸®½ºÆ® ±¸Çö½Ã ÇÊ¿äÇÑ ÇÔ¼ö
-void addNodeBefore(node *p, int e){
-	node *q;
-	q=getnode();
-	q->elem=e;
-	q->prev=p->prev;
-	q->next=p;
-	p->prev->next=q;
-	p->prev=q;
+//ì—°ê²°ë¦¬ìŠ¤íŠ¸ êµ¬í˜„ì‹œ í•„ìš”í•œ í•¨ìˆ˜
+void addNodeBefore(node* p, int e) {
+	node* q;
+	q = getnode();
+	q->elem = e;
+	q->prev = p->prev;
+	q->next = p;
+	p->prev->next = q;
+	p->prev = q;
 	return;
 }
-int removeNode(node* p){
+int removeNode(node* p) {
 	int e;
-	e=p->elem;
-	p->prev->next=p->next;
-	p->next->prev=p->prev;
+	e = p->elem;
+	p->prev->next = p->next;
+	p->next->prev = p->prev;
 	free(p);
 	return e;
 }
